@@ -4,6 +4,7 @@ using Test
 include("tests.jl")
 include("test_RP.jl")
 include("test_3d.jl")
+include("test_topology.jl")
 
 @testset verbose=true "CFMultigrid" begin
     @testset "rectangular 2D" begin
@@ -23,6 +24,14 @@ include("test_3d.jl")
     @testset "mask 3D" begin
         @test test_3d_centers()
         @test test_3d_vertices()
+
+    end
+
+    @testset "topology" begin
+        @test test_perio_3d_centers()
+        @test test_perio_3d_vertices()
+        @test test_perio_2d_centers()
+        @test test_perio_2d_vertices()
 
     end
 end

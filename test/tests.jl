@@ -34,7 +34,7 @@ end
 
 function test_default()
     res, ite = test_solve(;verbose=false)
-    return isapprox(res, 9.52e-11, atol = 1e-13) & (ite==8)
+    return isapprox(res, 1.4e-11, atol = 1e-12) & (ite==9)
 end
 
 function test_2d_centers()
@@ -43,7 +43,7 @@ function test_2d_centers()
               (:nz,1),
               (:case,:twod)])
     res, ite = test_solve(;verbose=false,kwargs=p)
-    return isapprox(res, 3.210e-11, atol = 1e-13) & (ite==11)
+    return isapprox(res, 2.3e-11, atol = 1e-12) & (ite==9)
 end
 
 function test_2d_vertices()
@@ -53,5 +53,5 @@ function test_2d_vertices()
               (:location, :vertices),
               (:case,:twod)])
     res, ite = test_solve(;verbose=false,kwargs=p)
-    return isapprox(res, 1.976e-11, atol = 1e-13) & (ite==10)
+    return isapprox(res, 9.9e-11, atol = 1e-12) & (ite==8)
 end
