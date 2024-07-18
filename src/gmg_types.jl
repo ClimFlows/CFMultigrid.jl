@@ -55,6 +55,7 @@ to see all the parameters. `param` is the sole input argument to create a multig
     operator = :laplacian
     cycle = :v
     verbose = true
+    topology = :closed
 end
 
 Base.show(io::IO, p:: Param) = begin

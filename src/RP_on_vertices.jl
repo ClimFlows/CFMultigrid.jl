@@ -28,6 +28,7 @@ function restriction_vertices!(mg:: Gmg, lev:: Int64, field:: Symbol)
             end
         end
     end
+    fill!(mg,lev+1,xc)
 end
 
 function prolongation_vertices!(mg:: Gmg, lev:: Int64)
@@ -66,6 +67,7 @@ function prolongation_vertices!(mg:: Gmg, lev:: Int64)
             end
         end
     end
+    fill!(mg,lev,xf)
 
 end
 
@@ -144,6 +146,7 @@ function restriction_vertices2d!(mg:: Gmg, lev:: Int64, field:: Symbol)
 
     rvloop2d!(x, xc, coef, grid)
 
+    fill!(mg,lev+1,xc)
 end
 
 function prolongation_vertices2d!(mg:: Gmg, lev:: Int64)
@@ -155,4 +158,5 @@ function prolongation_vertices2d!(mg:: Gmg, lev:: Int64)
     x = mg.data[lev+1].x
 
     pvloop2d!(x, xf, coef, grid)
+    fill!(mg,lev,xf)
 end

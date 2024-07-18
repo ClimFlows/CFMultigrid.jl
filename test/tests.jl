@@ -16,7 +16,7 @@ function test_solve(;kwargs=Dict(),verbose=true)
     ny = grid.ny
     nz = grid.nz
 
-    i0 = nh+1
+    i0 = nh+6
     i1 = nh+4
     j0 = nh+div(ny,2)
     if mg.param.case == :threed

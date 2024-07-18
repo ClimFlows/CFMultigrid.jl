@@ -78,6 +78,7 @@ function restriction_centers!(mg:: Gmg, lev:: Int64, field:: Symbol)
 
     rcloop3d!(x, xc, coef, grid)
 
+    fill!(mg,lev+1,xc)
 end
 
 function pcloop3d!(x:: A, xf:: A, coef:: A, grid:: Grid)
@@ -109,6 +110,7 @@ function prolongation_centers!(mg:: Gmg, lev:: Int64)
     x = mg.data[lev+1].x
 
     pcloop3d!(x, xf, coef, grid)
+    fill!(mg,lev,xf)
 end
 
 
@@ -138,6 +140,7 @@ function restriction_centers2d!(mg:: Gmg, lev:: Int64, field:: Symbol)
 
     rcloop2d!(x, xc, coef, grid)
 
+    fill!(mg, lev+1, xc)
 end
 
 function pcloop2d!(x:: A, xf:: A, coef:: A, grid:: Grid)
@@ -167,5 +170,6 @@ function prolongation_centers2d!(mg:: Gmg, lev:: Int64)
     x = mg.data[lev+1].x
 
     pcloop2d!(x, xf, coef, grid)
+    fill!(mg, lev, xf)
 
 end

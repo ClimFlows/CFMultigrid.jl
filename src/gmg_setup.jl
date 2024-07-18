@@ -118,6 +118,7 @@ function set_default_msk!(mg:: Gmg;lev=1)
             msk[i,j,k] = 1
         end
     end
+    fill!(mg,lev,msk)
 end
 
 function get_smoother_and_residual(param:: Param, grid:: Grid)
@@ -302,6 +303,7 @@ function get_default_msk!(mg:: Gmg;lev=1::Int64)
             msk[i,j,k] = 1
         end
     end
+    fill!(mg, lev, msk)
     return msk
 end
 

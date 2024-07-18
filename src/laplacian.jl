@@ -35,6 +35,7 @@ function smooth_laplacian!(mg:: Gmg, lev:: Int64, nite:: Int64)
     for kt in 1:nite
         sloop3d_v1!(x,y,b,idiag,grid,mg.param.omega,n1,n2)
         sloop3d_v1!(y,x,b,idiag,grid,mg.param.omega,n1,n2)
+        fill!(mg, lev, x)
     end
 
 end
@@ -59,6 +60,7 @@ function residual_laplacian!(mg:: Gmg, lev:: Int64)
 
     rloop3d!(x,r,b,diag,msk,grid)
 
+    fill!(mg, lev, r)
 end
 
 @loops function sloop2d!(_, x:: A, y:: A, b:: A, idiag:: A, msk:: M, grid:: Grid, omega:: Float64, n1)
@@ -104,6 +106,7 @@ function smooth_laplacian2d!(mg:: Gmg, lev:: Int64, nite:: Int64)
     for kt in 1:nite
         sloop2d!(mgr, x,y,b,idiag,msk,grid,mg.param.omega, n1)
         sloop2d!(mgr, y,x,b,idiag,msk,grid,mg.param.omega, n1)
+        fill!(mg, lev, x)
     end
 
 end
@@ -120,5 +123,6 @@ function residual_laplacian2d!(mg:: Gmg, lev:: Int64)
     n1 = size(x,1)
 
     rloop2d!(r,x,b,diag,msk,grid, n1)
+    fill!(mg, lev, r)
 
 end

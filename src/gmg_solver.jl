@@ -2,6 +2,7 @@ using Printf
 #using Plots
 
 include("gmg_types.jl")
+include("halo.jl")
 include("gmg_setup.jl")
 include("gmg_cycles.jl")
 
