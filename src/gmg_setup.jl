@@ -49,7 +49,7 @@ function create_levels(param:: Param)
 
     lev=1
     while true
-        ((nx>4) && (ny>4)) || break
+        ((nx*ny>8) && (nx>2) && (ny>2)) || break
         (lev<maxlevs) || break
         nx = div(nx,2)
         ny = div(ny,2)

@@ -40,7 +40,7 @@ function get_spherical_domain(shape; nh = 3)
     for k = nh+1:nz-nh+1, j = nh+1:ny-nh+1, i = 1+nh:nx-nh+1
         x = (i - nh - 0.5) * dx
         y = (j - nh - 0.5) * dy
-        z = (k - nh - 0.5) * dy
+        z = (k - nh - 0.5) * dz
         d2 = (x - 0.5)^2 + (y - 0.5)^2 + (z - 0.5)^2
         r2 = 0.5^2
         msk[i,j,k] = d2 < r2 ? 1 : 0
