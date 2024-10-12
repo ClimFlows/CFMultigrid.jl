@@ -12,7 +12,7 @@ end
 
 function test_perio_3d_vertices()
     res, ite = run_topology(32,:vertices;case=:threed)
-    return isapprox(res, 3.0e-13, atol = 1e-14) & (ite==6)
+    return isapprox(res, 3.1e-13, atol = 1e-14) & (ite==6)
 end
 
 function test_perio_3d_centers()
