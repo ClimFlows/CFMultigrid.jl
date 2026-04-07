@@ -1,6 +1,11 @@
 #include("highlevel_operators.jl")
 
 
+function setup(shape,nhalo,ope,bc;kwargs...)
+    levels = setup_levels(shape...;nhalo=nhalo)
+    setup_gmg(levels,ope,bc;kwargs...)
+end
+
 function setup_levels(nx,ny,nz;nhalo=1)
     maxlevs = 29
     location = (HALOED,HALOED,CLOSED)

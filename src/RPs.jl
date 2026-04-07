@@ -3,8 +3,8 @@ using BenchmarkTools
 #include("axes.jl")
 #include("boundary_conditions.jl")
 
-ICENTERS(a::Axis{HALOED,T}) where {T} = a.nhalo+2:a.nhalo+a.n-1
-ICENTERS(a::Axis{CLOSED,T}) where {T} = 2:a.n-1
+# ICENTERS(a::Axis{HALOED,T}) where {T} = a.nhalo+2:a.nhalo+a.n-1
+# ICENTERS(a::Axis{CLOSED,T}) where {T} = 2:a.n-1
 
 coarse_to_fine(i, ax::Axis{HALOED,I}) where I = (i-ax.nhalo-1)*2+ax.nhalo+1
 coarse_to_fine(i, ax::Axis{CLOSED,I}) where I = (i-1)*2+1
@@ -61,24 +61,24 @@ function restriction(xc::A,xf::A,coef::A,
     end
 end
 
-function restriction(xc::A,xf::A,coef::A,
-                     axes::AX,::Type{R}) where {T,AX<:AXES,
-                                                A<:Array{T,3},
-                                                B<:BC,
-                                                R<:RP{XY,B}}
-    (;ax1,ax2,ax3) = axes
-    for k in CENTERS(ax3)
-        for jj in CENTERS(ax2), ii in CENTERS(ax1)
-            i = coarse_to_fine(ii,ax1)
-            j = coarse_to_fine(jj,ax2)
+# function restriction(xc::A,xf::A,coef::A,
+#                      axes::AX,::Type{R}) where {T,AX<:AXES,
+#                                                 A<:Array{T,3},
+#                                                 B<:BC,
+#                                                 R<:RP{XY,B}}
+#     (;ax1,ax2,ax3) = axes
+#     for k in CENTERS(ax3)
+#         for jj in CENTERS(ax2), ii in CENTERS(ax1)
+#             i = coarse_to_fine(ii,ax1)
+#             j = coarse_to_fine(jj,ax2)
 
-            xc[ii,jj,k] = coef[ii,jj,k]*(
-                xf[i,j  ,k  ] + xf[i+1,j  ,k  ]+
-                    xf[i,j+1,k  ] + xf[i+1,j+1,k  ])
+#             xc[ii,jj,k] = coef[ii,jj,k]*(
+#                 xf[i,j  ,k  ] + xf[i+1,j  ,k  ]+
+#                     xf[i,j+1,k  ] + xf[i+1,j+1,k  ])
 
-        end
-    end
-end
+#         end
+#     end
+# end
 
 function restriction(xc::A,xf::A,coef::A,
                      axes::AX,::Type{R}) where {T,AX<:AXES,

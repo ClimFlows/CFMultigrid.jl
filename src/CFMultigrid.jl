@@ -12,7 +12,7 @@ include("highlevel_operators.jl")
 include("setup.jl")
 include("solver.jl")
 
-export solve!, Param, setup_gmg, VCYCLE
+export solve!, Param, setup, VCYCLE
 export Jacobi, Gauss_Seidel, LineRelaxation
 export Poisson, PoissonNonUniform
 export NEUMANN, DIRICHLET
