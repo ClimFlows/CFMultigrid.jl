@@ -1,4 +1,4 @@
-include("grids.jl")
+#include("grids.jl")
 
 function restriction(xc,xf,coarse::G) where {RP,AX,T,O,G<:Grid{RP,AX,T,O}}
     restriction(xc,xf,coarse.Rcoef,coarse.axes,RP)

@@ -94,8 +94,8 @@ function check_msk(msk,shape)
 end
 
 
-include("poisson.jl")
-include("poisson_nonuniform.jl")
+#include("poisson.jl")
+#include("poisson_nonuniform.jl")
 
 function set_ope_coef(fine,coarse) end
 

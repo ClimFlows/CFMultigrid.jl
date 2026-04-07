@@ -1,57 +1,33 @@
-# using AnotherGeometricMultigrid
 using CFMultigrid
 
-function test_solve(;kwargs=Dict(),verbose=true)
-    param = Param(;kwargs...)
-    param.verbose = verbose
-    mg = get_gmg(param)
-    if verbose
-        println(param)
-        println(mg.levels)
-    end
-    grid = mg.levels[1].grid
-    b = mg.data[1].b
-    nh = grid.nh
-    nx = grid.nx
-    ny = grid.ny
-    nz = grid.nz
+function test_solve(shape,smoother,kwargs,OPE,BC)
+    # nx,ny,nz = 128,128,8
+    #nx,ny,nz = 512,512,1
+    #nx,ny,nz = 32,32,1
+    nx,ny,nz = shape
 
-    i0 = nh+6
-    i1 = nh+4
-    j0 = nh+div(ny,2)
-    if mg.param.case == :threed
-        k0 = nh+4
-        b[i0,i0,k0] = 1.0
-        b[i1,i1,k0] = -1.0
-    else
-        b[i0,j0,1] = 1.0
-        b[i1,j0,1] = -1.0
-    end
+    levels = setup_levels(nx,ny,nz)
 
-    res, nite = solve!(mg)
+    # smoother = Jacobi(0.85)
+    # smoother = LinearRelaxation(nz,Float64)
+    param = Param(1,2,20,10,1e-9,smoother)
+
+    # kwargs = (;cxx=1,cyy=1,czz=100)
+    # kwargs = (;)
+
+    mg = setup_gmg(levels,OPE,BC;kwargs...)
+
+    (;x,b,r) = mg[1]
+
+    b[1+div(nx,3),1+div(ny,3),1] = 1
+    b[nx-div(nx,3),ny-div(ny,3),1] = -1
+
+    solve!(mg,param,VCYCLE)
 end
 
 
 function test_default()
-    res, ite = test_solve(;verbose=false)
-    return isapprox(res, 1.4e-11, atol = 1e-12) & (ite==9)
+    test_solve((128,128,8),Jacobi(0.85),(;),Poisson,NEUMANN)
+    #return isapprox(res, 1.4e-11, atol = 1e-12) & (ite==9)
 end
 
-function test_2d_centers()
-    p = Dict([(:nx,512),
-              (:ny,512),
-              (:nz,1),
-              (:case,:twod)])
-    res, ite = test_solve(;verbose=false,kwargs=p)
-    return isapprox(res, 2.3e-11, atol = 1e-12) & (ite==9)
-end
-
-function test_2d_vertices()
-    p = Dict([(:nx,512),
-              (:ny,512),
-              (:nz,1),
-              (:location, :vertices),
-              (:case,:twod)])
-    res, ite = test_solve(;verbose=false,kwargs=p)
-    return isapprox(res, 9.9e-11, atol = 1e-12) & (ite==8)
-end

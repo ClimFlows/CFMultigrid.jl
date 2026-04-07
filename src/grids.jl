@@ -1,12 +1,11 @@
-include("axes.jl")
-
-include("boundary_conditions.jl")
+#include("axes.jl")
+#include("boundary_conditions.jl")
 
 ICENTERS(a::Axis{HALOED,T}) where {T} = a.nhalo+2:a.nhalo+a.n-1
 ICENTERS(a::Axis{CLOSED,T}) where {T} = 2:a.n-1
 
 
-using Plots
+#using Plots
 
 struct Grid{RP,AX,T,O}
     axes:: AX
@@ -41,9 +40,9 @@ end
 
 
 
-include("lowlevel_operators.jl")
-include("RPs.jl")
-include("smoothers.jl")
+#include("lowlevel_operators.jl")
+#include("RPs.jl")
+#include("smoothers.jl")
 
 
 
