@@ -1,7 +1,21 @@
 module CFMultigrid
 
-export solve!, Param, get_gmg, setup_operators!, vcycle!, fill!
+include("axes.jl")
+include("boundary_conditions.jl")
+include("lowlevel_operators.jl")
+include("grids.jl")
+include("RPs.jl")
+include("smoothers.jl")
+include("poisson.jl")
+include("poisson_nonuniform.jl")
+include("highlevel_operators.jl")
+include("setup.jl")
+include("solver.jl")
 
-include("gmg_solver.jl")
+export solve!, Param, setup, VCYCLE
+export Jacobi, Gauss_Seidel, LineRelaxation
+export Poisson, PoissonNonUniform
+export NEUMANN, DIRICHLET
+export restriction, prolongation
 
 end
