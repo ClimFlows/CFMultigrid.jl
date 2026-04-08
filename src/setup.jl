@@ -1,5 +1,3 @@
-#include("highlevel_operators.jl")
-
 
 function setup(shape,nhalo,ope,bc;kwargs...)
     levels = setup_levels(shape...;nhalo=nhalo)
@@ -8,7 +6,7 @@ end
 
 function setup_levels(nx,ny,nz;nhalo=1)
     maxlevs = 29
-    location = (HALOED,HALOED,CLOSED)
+    #location = (HALOED,HALOED,CLOSED)
     location = (CLOSED,CLOSED,CLOSED)
     axes = Axes(nx,ny,nz,nhalo,location...)
     switch = (nz>1) ? XYZ : XY
@@ -37,7 +35,7 @@ end
 function setup_gmg(levels,ope,bc;kwargs...)
     mg = Tuple([Grid(axes,ope,bc,mode;kwargs...) for (axes, mode) in levels])
     for k in 1:length(mg)-1
-        println("LEVEL $k")
+        #println("LEVEL $k")
         set_Rcoef(mg[k],mg[k+1])
         set_Pcoef(mg[k],mg[k+1])
         set_ope_coef(mg[k],mg[k+1])

@@ -6,8 +6,6 @@ abstract type TWOLEVEL<:CYCLE end
 abstract type VCYCLE<:CYCLE end
 abstract type FCYCLE<:CYCLE end
 
-include("setup.jl")
-
 struct Param{I,F,S}
     npre::I
     npost::I

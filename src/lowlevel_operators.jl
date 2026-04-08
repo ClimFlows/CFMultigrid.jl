@@ -3,6 +3,17 @@ abstract type OPERATOR end
 @inline ddi(x::A,i,j,k,di,ax::Axis{HALOED,I}) where {I,T,A<:Array{T,3}} = x[i+di,j,k]
 @inline ddi(x::A,i,j,k,di,ax::Axis{CLOSED,I}) where {I,T,A<:Array{T,3}} = (0<i+di<=ax.n) ? x[i+di,j,k] : T(0)
 
+@inline ddj(x::A,i,j,k,dj,ax::Axis{HALOED,I}) where {I,T,A<:Array{T,3}} = x[i,j+dj,k]
+@inline ddj(x::A,i,j,k,dj,ax::Axis{CLOSED,I}) where {I,T,A<:Array{T,3}} = (0<j+dj<=ax.n) ? x[i,j+dj,k] : T(0)
+
+@inline ddk(x::A,i,j,k,dk,ax::Axis{HALOED,I}) where {I,T,A<:Array{T,3}} = x[i,j,k+dk]
+@inline ddk(x::A,i,j,k,dk,ax::Axis{CLOSED,I}) where {I,T,A<:Array{T,3}} = (0<k+dk<=ax.n) ? x[i,j,k+dk] : T(0)
+
+@inline ddij(x::A,i,j,k,di,dj,ax1::Axis{HALOED,I},ax2) where{I,T,A<:Array{T,3}} = ddj(x,i+di,j,k,dj,ax2)
+
+@inline ddij(x::A,i,j,k,di,dj,ax1::Axis{CLOSED,I},ax2) where{I,T,A<:Array{T,3}} = (0<i+di<=ax1.n) ? ddj(x,i+di,j,k,dj,ax2) : T(0)
+
+
 # @inline function ddi(x::A,i,j,k,di) where{T,A<:Array{T,3}}
 #     if 0<i+di<=size(x,1)
 #         return x[i+di,j,k]
@@ -11,29 +22,29 @@ abstract type OPERATOR end
 #     end
 # end
 
-@inline function ddj(x::A,i,j,k,dj) where{T,A<:Array{T,3}}
-    if 0<j+dj<=size(x,2)
-        return x[i,j+dj,k]
-    else
-        return T(0)
-    end
-end
+# @inline function ddj(x::A,i,j,k,dj) where{T,A<:Array{T,3}}
+#     if 0<j+dj<=size(x,2)
+#         return x[i,j+dj,k]
+#     else
+#         return T(0)
+#     end
+# end
 
-@inline function ddk(x::A,i,j,k,dk) where{T,A<:Array{T,3}}
-    if 0<k+dk<=size(x,3)
-        return x[i,j,k+dk]
-    else
-        return T(0)
-    end
-end
+# @inline function ddk(x::A,i,j,k,dk) where{T,A<:Array{T,3}}
+#     if 0<k+dk<=size(x,3)
+#         return x[i,j,k+dk]
+#     else
+#         return T(0)
+#     end
+# end
 
-@inline function ddij(x::A,i,j,k,di,dj) where{T,A<:Array{T,3}}
-    if (0<j+dj<=size(x,2)) && (0<i+di<size(x,1))
-        return x[i+di,j+dj,k]
-    else
-        return T(0)
-    end
-end
+# @inline function ddij(x::A,i,j,k,di,dj) where{T,A<:Array{T,3}}
+#     if (0<j+dj<=size(x,2)) && (0<i+di<size(x,1))
+#         return x[i+di,j+dj,k]
+#     else
+#         return T(0)
+#     end
+# end
 
 @inline function ddi3(x::A,i,j,k) where{T,A<:Array{T,3}}
     if i==1

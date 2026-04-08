@@ -54,12 +54,13 @@ function residual(r::A,x::A,b::A,ope::O) where {T,AX,M,D,
                                                 O<:PoissonNonUniform{T,AX,M,D}
                                                 }
     (;diag,axes,msk,cxx,cyy,czz) = ope
-    for i in CENTERS(axes.ax1), j in CENTERS(axes.ax2), k in CENTERS(axes.ax3)
+    (;ax1,ax2,ax3) = axes
+    for k in CENTERS(axes.ax3), j in CENTERS(axes.ax2), i in CENTERS(axes.ax1)
         r[i,j,k] =M(
         b[i,j,k]-(
-            +(ddi(x,i,j,k,-1)+ddi(x,i,j,k,+1))*cxx
-            +(ddj(x,i,j,k,-1)+ddj(x,i,j,k,+1))*cyy
-            +(ddk(x,i,j,k,-1)+ddk(x,i,j,k,+1))*czz
+            +(ddi(x,i,j,k,-1,ax1)+ddi(x,i,j,k,+1,ax1))*cxx
+            +(ddj(x,i,j,k,-1,ax2)+ddj(x,i,j,k,+1,ax2))*cyy
+            +(ddk(x,i,j,k,-1,ax3)+ddk(x,i,j,k,+1,ax3))*czz
             -diag[i,j,k]*x[i,j,k]), msk, i,j,k)
     end
 end
@@ -67,14 +68,15 @@ end
 function jacobi(y::A,x::A,b::A,omega::T,ope::O) where {T,AX,M,D,
                                                        A<:Array{T,3},
                                                        O<:PoissonNonUniform{T,AX,M,D}}
-    (;idiag,axes,msk)=ope
-    for i in CENTERS(axes.ax1), j in CENTERS(axes.ax2), k in CENTERS(axes.ax3)
+    (;idiag,axes,msk,cxx,cyy,czz)=ope
+    (;ax1,ax2,ax3) = axes
+    for k in CENTERS(axes.ax3), j in CENTERS(axes.ax2), i in CENTERS(axes.ax1)
         y[i,j,k] = M(
             (T(1)-omega)*x[i,j,k]-omega*idiag[i,j,k]*(
                 b[i,j,k]-(
-                    +ddi(x,i,j,k,-1)+ddi(x,i,j,k,+1)
-                    +ddj(x,i,j,k,-1)+ddj(x,i,j,k,+1)
-                    +ddk(x,i,j,k,-1)+ddk(x,i,j,k,+1)
+                    +(ddi(x,i,j,k,-1,ax1)+ddi(x,i,j,k,+1,ax1))*cxx
+                    +(ddj(x,i,j,k,-1,ax2)+ddj(x,i,j,k,+1,ax2))*cyy
+                    +(ddk(x,i,j,k,-1,ax3)+ddk(x,i,j,k,+1,ax3))*czz
                 )),msk,i,j,k)
     end
 
@@ -85,11 +87,12 @@ function linerelaxation(x::A,b::A,rhs::V,d::V,ud::V,ope::O) where {T,AX,M,D,
                                                                    V<:Array{T,1},
                                                                    O<:PoissonNonUniform{T,AX,M,D}}
     (;diag,axes,msk,cxx,cyy,czz)=ope
-    for i in CENTERS(axes.ax1), j in CENTERS(axes.ax2)
+    (;ax1,ax2,ax3) = axes
+    for j in CENTERS(axes.ax2), i in CENTERS(axes.ax1)
         for k in CENTERS(axes.ax3)
             rhs[k] = M(b[i,j,k]-(
-                +(ddi(x,i,j,k,-1)+ddi(x,i,j,k,+1))*cxx
-                +(ddj(x,i,j,k,-1)+ddj(x,i,j,k,+1))*cyy),msk,i,j,k)
+                +(ddi(x,i,j,k,-1,ax1)+ddi(x,i,j,k,+1,ax1))*cxx
+                +(ddj(x,i,j,k,-1,ax2)+ddj(x,i,j,k,+1,ax2))*cyy),msk,i,j,k)
             d[k] = -diag[i,j,k]
             ud[k] = czz
         end

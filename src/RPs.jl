@@ -99,16 +99,16 @@ end
 
 @inline Rsquare(x,i,j,k,ax1,ax2) = (81(x[i,j,k]+x[i+1,j,k]+x[i,j+1,k]+x[i+1,j+1,k])
                             -9(ddi(x,i,j,k,-1,ax1)+ddi(x,i,j,k,2,ax1)
-                               +ddj(x,i,j,k,-1)+ddj(x,i,j,k,2)
-                               +ddij(x,i,j,k,-1,1)+ddij(x,i,j,k,2,1)
-                               +ddij(x,i,j,k,1,-1)+ddij(x,i,j,k,1,2))
-                            +(ddij(x,i,j,k,-1,-1)+ddij(x,i,j,k,-1,2)
-                              +ddij(x,i,j,k,2,-1)+ddij(x,i,j,k,2,2))
+                               +ddj(x,i,j,k,-1,ax2)+ddj(x,i,j,k,2,ax2)
+                               +ddij(x,i,j,k,-1,1,ax1,ax2)+ddij(x,i,j,k,2,1,ax1,ax2)
+                               +ddij(x,i,j,k,1,-1,ax1,ax2)+ddij(x,i,j,k,1,2,ax1,ax2))
+                            +(ddij(x,i,j,k,-1,-1,ax1,ax2)+ddij(x,i,j,k,-1,2,ax1,ax2)
+                              +ddij(x,i,j,k,2,-1,ax1,ax2)+ddij(x,i,j,k,2,2,ax1,ax2))
                             )/64
 
 #@inline square(x,i,j,k,di,dj) = 9x[i,j,k]+3x[i+di,j,k]+3x[i,j+dj,k]+x[i+di,j+dj,k]
 
-@inline square(x,i,j,k,di,dj,ax1,ax2) = 9x[i,j,k]+3*ddi(x,i,j,k,di,ax1)+3*ddj(x,i,j,k,dj)+ddij(x,i,j,k,di,dj)
+@inline square(x,i,j,k,di,dj,ax1,ax2) = 9x[i,j,k]+3*ddi(x,i,j,k,di,ax1)+3*ddj(x,i,j,k,dj,ax2)+ddij(x,i,j,k,di,dj,ax1,ax2)
 
 function prolongation(xf::A,xc::A,coef::A,
                      axes::AX,::Type{R}) where {T,AX<:AXES,

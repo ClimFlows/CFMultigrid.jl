@@ -12,7 +12,7 @@ struct LineRelaxation{T}<:SMOOTHER
     ud::Array{T,1}
 end
 
-function LinearRelaxation(n,T)
+function LineRelaxation(n,T)
     rhs,d,ud = [zeros(T,n) for _ in 1:3]
     LineRelaxation{T}(rhs,d,ud)
 end
