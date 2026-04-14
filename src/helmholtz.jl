@@ -43,7 +43,6 @@ get_RP(grid::G) where {RP,AX,T,O,G<:Grid{RP,AX,T,O}} = RP
 function set_ope_coef(fine,coarse,::Type{H},::Type{B}) where {T,AX,M,D<:DIRECTIONS,B<:BC,H<:Helmholtz{T,AX,M,D}}
     RP = get_RP(coarse)
     restriction(coarse.ope.coef,fine.ope.coef,coarse.Rcoef,coarse.axes,RP)
-    @. coarse.ope.coef *= 4
     set_helmholtz_diag(coarse.ope, B)
 end
 
@@ -82,34 +81,69 @@ end
 
 
 
-function residual(r::A,x::A,b::A,ope::O) where {T,AX,M,D,
+function residual(r::A,x::A,b::A,ope::O) where {T,AX,M,
                                                 A<:Array{T,3},
-                                                O<:Helmholtz{T,AX,M,D}
+                                                O<:Helmholtz{T,AX,M,XYZ}
                                                 }
     (;diag,axes,msk,cxx,cyy,czz) = ope
     (;ax1,ax2,ax3) = axes
     for k in CENTERS(axes.ax3), j in CENTERS(axes.ax2), i in CENTERS(axes.ax1)
         r[i,j,k] =M(
         b[i,j,k]-(
-            +(ddi(x,i,j,k,-1,ax1)+ddi(x,i,j,k,+1,ax1))*cxx
-            +(ddj(x,i,j,k,-1,ax2)+ddj(x,i,j,k,+1,ax2))*cyy
-            +(ddk(x,i,j,k,-1,ax3)+ddk(x,i,j,k,+1,ax3))*czz
+            # +(ddi(x,i,j,k,-1,ax1)+ddi(x,i,j,k,+1,ax1))*cxx
+            # +(ddj(x,i,j,k,-1,ax2)+ddj(x,i,j,k,+1,ax2))*cyy
+            # +(ddk(x,i,j,k,-1,ax3)+ddk(x,i,j,k,+1,ax3))*czz
+            ddi3(x,i,j,k)*cxx+ddj3(x,i,j,k)*cyy+ddk3(x,i,j,k)*czz
             -diag[i,j,k]*x[i,j,k]), msk, i,j,k)
     end
 end
 
-function jacobi(y::A,x::A,b::A,omega::T,ope::O) where {T,AX,M,D,
+function residual(r::A,x::A,b::A,ope::O) where {T,AX,M,
+                                                A<:Array{T,3},
+                                                O<:Helmholtz{T,AX,M,XY}
+                                                }
+    (;diag,axes,msk,cxx,cyy,czz) = ope
+    (;ax1,ax2,ax3) = axes
+    for k in CENTERS(axes.ax3), j in CENTERS(axes.ax2), i in CENTERS(axes.ax1)
+        r[i,j,k] =M(
+        b[i,j,k]-(
+            # +(ddi(x,i,j,k,-1,ax1)+ddi(x,i,j,k,+1,ax1))*cxx
+            # +(ddj(x,i,j,k,-1,ax2)+ddj(x,i,j,k,+1,ax2))*cyy
+            ddi3(x,i,j,k)*cxx+ddj3(x,i,j,k)*cyy
+            -diag[i,j,k]*x[i,j,k]), msk, i,j,k)
+    end
+end
+
+function jacobi(y::A,x::A,b::A,omega::T,ope::O) where {T,AX,M,
                                                        A<:Array{T,3},
-                                                       O<:Helmholtz{T,AX,M,D}}
+                                                       O<:Helmholtz{T,AX,M,XYZ}}
     (;idiag,axes,msk,cxx,cyy,czz)=ope
     (;ax1,ax2,ax3) = axes
     for k in CENTERS(axes.ax3), j in CENTERS(axes.ax2), i in CENTERS(axes.ax1)
         y[i,j,k] = M(
             (T(1)-omega)*x[i,j,k]-omega*idiag[i,j,k]*(
                 b[i,j,k]-(
-                    +(ddi(x,i,j,k,-1,ax1)+ddi(x,i,j,k,+1,ax1))*cxx
-                    +(ddj(x,i,j,k,-1,ax2)+ddj(x,i,j,k,+1,ax2))*cyy
-                    +(ddk(x,i,j,k,-1,ax3)+ddk(x,i,j,k,+1,ax3))*czz
+                    # +(ddi(x,i,j,k,-1,ax1)+ddi(x,i,j,k,+1,ax1))*cxx
+                    # +(ddj(x,i,j,k,-1,ax2)+ddj(x,i,j,k,+1,ax2))*cyy
+                    # +(ddk(x,i,j,k,-1,ax3)+ddk(x,i,j,k,+1,ax3))*czz
+                    ddi3(x,i,j,k)*cxx+ddj3(x,i,j,k)*cyy+ddk3(x,i,j,k)*czz
+                )),msk,i,j,k)
+    end
+
+end
+
+function jacobi(y::A,x::A,b::A,omega::T,ope::O) where {T,AX,M,
+                                                       A<:Array{T,3},
+                                                       O<:Helmholtz{T,AX,M,XY}}
+    (;idiag,axes,msk,cxx,cyy,czz)=ope
+    (;ax1,ax2,ax3) = axes
+    for k in CENTERS(axes.ax3), j in CENTERS(axes.ax2), i in CENTERS(axes.ax1)
+        y[i,j,k] = M(
+            (T(1)-omega)*x[i,j,k]-omega*idiag[i,j,k]*(
+                b[i,j,k]-(
+                    # +(ddi(x,i,j,k,-1,ax1)+ddi(x,i,j,k,+1,ax1))*cxx
+                    # +(ddj(x,i,j,k,-1,ax2)+ddj(x,i,j,k,+1,ax2))*cyy
+                    ddi3(x,i,j,k)*cxx+ddj3(x,i,j,k)*cyy
                 )),msk,i,j,k)
     end
 
