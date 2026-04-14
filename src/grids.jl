@@ -18,6 +18,8 @@ struct Grid{RP,AX,T,O}
     ope:: O
 end
 
+Operator(grid::G) where {RP,AX,T,O,G<:Grid{RP,AX,T,O}} = O
+
 function Grid(axes,OPE,bc,switch;kwargs...)
     x,b,r,y,Rcoef,Pcoef=[zeros(size(axes,CCC)) for _ in 1:6]
     ope = OPE(axes,bc,switch;kwargs...)

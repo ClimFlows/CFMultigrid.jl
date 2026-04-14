@@ -38,7 +38,8 @@ function setup_gmg(levels,ope,bc;kwargs...)
         #println("LEVEL $k")
         set_Rcoef(mg[k],mg[k+1])
         set_Pcoef(mg[k],mg[k+1])
-        set_ope_coef(mg[k],mg[k+1])
+        ope = Operator(mg[k])
+        set_ope_coef(mg[k],mg[k+1],ope,bc)
     end
     return mg
 end

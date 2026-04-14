@@ -7,6 +7,7 @@ include("tests.jl")
     @testset "solve" begin
         test_default()
         test_solve()
+        test_helmholtz()
     end
 end
 println("tests done")

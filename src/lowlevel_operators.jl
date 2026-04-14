@@ -108,7 +108,7 @@ end
 #include("poisson.jl")
 #include("poisson_nonuniform.jl")
 
-function set_ope_coef(fine,coarse) end
+function set_ope_coef(fine,coarse,::Type{O},::Type{B}) where {O<:OPERATOR,B<:BC} end
 
 
 
