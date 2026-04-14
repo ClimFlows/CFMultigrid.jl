@@ -1,4 +1,5 @@
 using CFMultigrid
+using Test
 
 function test_solve(shape,smoother,kwargs,OPE,BC,verbose)
     # nx,ny,nz = 128,128,8
@@ -49,3 +50,12 @@ function test_solve()
     end
 end
 
+function test_helmholtz()
+    exps = [
+        [((128,128,8),LineRelaxation(8,Float64),(;cxx=1,cyy=1,czz=100,coef=1.0),Helmholtz,NEUMANN), (2.8e-10,5)]
+    ]
+    for (a,out) in  exps
+        res, ite = test_solve(a..., true)
+        @test (isapprox(res,out[1], rtol=0.05) & (ite==out[2]))
+    end
+end
