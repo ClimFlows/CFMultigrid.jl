@@ -1,3 +1,3 @@
 var documenterSearchIndex = {"docs":
-[{"category":"section","location":"#CFMultigrid","page":"Home","text":"Documentation for CFMultigrid.\n\n","title":"CFMultigrid"}]
+[{"category":"section","location":"#CFMultigrid","page":"Home","text":"Documentation for CFMultigrid.\n\n","title":"CFMultigrid"},{"category":"type","location":"#CFMultigrid.Helmholtz","page":"Home","text":"Helmholtz operator\n\nThe diag term is diag = C+D with\n\nD = 1/2(dx^2+dy^2+dz^2), the Poisson part\nC, the identity part\n\nidiag is idiag = 1/diag, like for Poisson\n\nDuring the coarsening, we keep D constant (it should be divided by 4). To compensate, C must multiplied by 4.\n\nDuring the coarsening, restriction averages x then multiplies by\n\nTo set the diagonal on the coarsened grid the technique is simple:\n\napply the restriction on the coefficient. This is one in set_ope_coef\n\n\n\n\n\n","title":"CFMultigrid.Helmholtz"}]
 }
