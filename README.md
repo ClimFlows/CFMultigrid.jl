@@ -16,7 +16,6 @@ and is used by the [ClimFlows](https://github.com/ClimFlows) atmospheric models.
 - `Poisson`, `PoissonNonUniform` (anisotropic coefficients) and `Helmholtz`
   operators.
 - `NEUMANN` and `DIRICHLET` boundary conditions.
-- Optional mask for solid regions.
 - Weighted `Jacobi` and vertical `LineRelaxation` smoothers.
 - V-cycles driven by a small `Param` object.
 
@@ -66,7 +65,7 @@ println("res = ", res, " after ", nite, " V-cycles")
 This produces:
 
 ```text
-res = 7.247386466700879e-11 after 5 V-cycles
+res = 7.647626690763077e-10 after 10 V-cycles
 ```
 
 After the solve, the solution is stored in `mg[1].x`. The `mg` object is a
@@ -87,7 +86,7 @@ The available operators are:
 | --- | --- |
 | `Poisson` | Constant-coefficient Poisson operator (7-point in 3-D, 5-point in 2-D). |
 | `PoissonNonUniform` | Poisson operator with anisotropic coefficients `cxx`, `cyy`, `czz`. |
-| `Helmholtz` | Poisson operator plus a constant identity term `coef`. |
+| `Helmholtz` | Poisson operator with an additional `-coef * x` term, i.e. `(∇² - coef) x = b`. |
 
 Keyword arguments accepted by `setup` are forwarded to the operator:
 
@@ -97,14 +96,15 @@ param = Param(1, 2, 20, 20, 1e-9, LineRelaxation(8, Float64))
 mg = setup((128, 128, 8), 1, PoissonNonUniform, NEUMANN;
            cxx = 1.0, cyy = 1.0, czz = 100.0)
 
-# Helmholtz operator: -∇² + coef, using unit coefficients in x and y.
+# Helmholtz operator: (∇² - coef) x = b, using unit coefficients in x and y.
 mg = setup((64, 64, 1), 1, Helmholtz, NEUMANN;
            cxx = 1.0, cyy = 1.0, czz = 100.0, coef = 1.0)
 ```
 
-An optional `msk` keyword argument takes an `Int8` array of the same shape as
-the grid. Cells with `msk == 1` are active; cells with `msk == 0` are excluded
-from the solve.
+The operators accept an optional `msk` keyword argument (`Int8` array, with
+`1` for active cells and `0` for excluded cells). It is not yet usable through
+`setup`, because the same mask is currently forwarded to every grid level; see
+[issue #17](https://github.com/ClimFlows/CFMultigrid.jl/issues/17).
 
 ## API overview
 
@@ -112,11 +112,12 @@ from the solve.
   and returns a tuple of grids, finest first.
 - `Param(npre, npost, ndeepest, maxite, tol, smoother)` configures the cycle:
   number of pre- and post-smoothing steps, number of smoothing steps on the
-  coarsest level, maximum number of V-cycles, relative-residual tolerance and
-  smoother.
+  coarsest level, maximum number of V-cycles, relative L2-residual tolerance
+  and smoother.
 - `solve!(mg, param, VCYCLE; verbose = true)` runs V-cycles until the relative
-  residual drops below `param.tol` or `param.maxite` is reached. It returns
-  `(res, nite)`.
+  L2 residual `‖r‖₂ / ‖b‖₂` drops below `param.tol` or `param.maxite` is
+  reached. It returns `(res, nite)`, where `res` is that relative L2 residual.
+  For example, `tol = 1e-9` requests `‖r‖₂ / ‖b‖₂ <= 1e-9`.
 - Smoothers: `Jacobi(omega)` and `LineRelaxation(n, T)`.
 - Boundary conditions: `NEUMANN` and `DIRICHLET`.
 - Low-level transfer operators `restriction` and `prolongation` are exported
@@ -137,6 +138,10 @@ solvers in 2-D and 3-D.
 The documentation is available at
 [ClimFlows.github.io/CFMultigrid.jl](https://ClimFlows.github.io/CFMultigrid.jl/stable/).
 It is built from the docstrings in `src/`.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for the release history.
 
 ## License
 

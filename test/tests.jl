@@ -12,7 +12,7 @@ function test_solve(shape,smoother,kwargs,OPE,BC,verbose)
 
     # smoother = Jacobi(0.85)
     # smoother = LinearRelaxation(nz,Float64)
-    param = Param(1,2,20,10,1e-9,smoother)
+    param = Param(1,2,20,20,1e-9,smoother)
 
     # kwargs = (;cxx=1,cyy=1,czz=100)
     # kwargs = (;)
@@ -34,15 +34,15 @@ function test_default()
     #res, ite = test_solve((128,128,8),Jacobi(0.85),(;cxx=1,cyy=1,czz=100),PoissonNonUniform,NEUMANN, true)
      #res, ite = test_solve((128,128,16),Jacobi(0.85),(;),Poisson,DIRICHLET, true)
 
-    @test isapprox(res, 1.01e-10, rtol = 0.05) & (ite==5)
+    @test isapprox(res, 7.42e-10, rtol = 0.05) & (ite==10)
 end
 
 function test_solve()
     exps = [
-        [((64,64,64),LineRelaxation(64,Float64),(;),Poisson,NEUMANN),(3.25e-11, 5)],
-        [((64,64,64),Jacobi(0.85),(;),Poisson,DIRICHLET),(1.11e-10, 6)],
-        [((64,64,64),LineRelaxation(64,Float64),(;),Poisson,DIRICHLET), (1.47e-10, 5)],
-        [((128,128,8),LineRelaxation(8,Float64),(;cxx=1,cyy=1,czz=100),PoissonNonUniform,NEUMANN),(1.45e-10,4)]
+        [((64,64,64),LineRelaxation(64,Float64),(;),Poisson,NEUMANN),(2.05e-10, 10)],
+        [((64,64,64),Jacobi(0.85),(;),Poisson,DIRICHLET),(7.73e-10, 14)],
+        [((64,64,64),LineRelaxation(64,Float64),(;),Poisson,DIRICHLET), (3.66e-10, 12)],
+        [((128,128,8),LineRelaxation(8,Float64),(;cxx=1,cyy=1,czz=100),PoissonNonUniform,NEUMANN),(1.93e-10,9)]
     ]
     for (a,out) in  exps
         res, ite = test_solve(a..., false)
@@ -52,8 +52,8 @@ end
 
 function test_helmholtz()
     exps = [
-        [((128,128,8),LineRelaxation(8,Float64),(;cxx=1,cyy=1,czz=100,coef=1.0),Helmholtz,NEUMANN), (2.2e-10,3)],
-        [((128,128,1),LineRelaxation(1,Float64),(;cxx=1,cyy=1,czz=100,coef=1.0),Helmholtz,NEUMANN), (2.6e-12,4)]
+        [((128,128,8),LineRelaxation(8,Float64),(;cxx=1,cyy=1,czz=100,coef=1.0),Helmholtz,NEUMANN), (1.30e-10,7)],
+        [((128,128,1),LineRelaxation(1,Float64),(;cxx=1,cyy=1,czz=100,coef=1.0),Helmholtz,NEUMANN), (2.60e-10,7)]
     ]
     for (a,out) in  exps
         res, ite = test_solve(a..., false)

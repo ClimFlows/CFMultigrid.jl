@@ -28,5 +28,5 @@ function norm(grid, which)
     for i in CENTERS(ax1), j in CENTERS(ax2), k in CENTERS(ax3)
         total += x[i,j,k]^2
     end
-    return total
+    return sqrt(total)
 end
